@@ -62,27 +62,24 @@ def open_TE(te_file_name):
     return df
 
 
-def has_overlap(gene_start, gene_end, tra_start, tra_end):
-    if gene_start > tra_end:
-        return False
-    if gene_end < tra_start:
-        return False
-
-    return True
-
-
 def get_te_gene_overlap(te_df, gene_df):
     results = pandas.DataFrame({"chineseSpringGeneID": [], "overlap": []})
     # for _, gene in tqdm.tqdm(gene_df.iterrows()):
-    for _, gene in tqdm.tqdm(gene_df.iloc[0:5,:].iterrows()):
+    for _, gene in tqdm.tqdm(gene_df.iterrows()):
         chromosome_matched_transposons = te_df[te_df["Chr"] == gene["Chr"]]
         start, end = gene["startIndex"], gene["endIndex"]
         found_overlapping_transposon = False
-        for _, transposon in chromosome_matched_transposons.iterrows():
-            tra_start, tra_end = transposon["startIndex"], transposon["endIndex"]
-            if has_overlap(start, end, tra_start, tra_end):
-                found_overlapping_transposon = True
-                break
+
+        if len(chromosome_matched_transposons["startIndex"].between(start, end)) > 0:
+            found_overlapping_transposon = True
+        elif len(chromosome_matched_transposons["endIndex"].between(start, end)) > 0:
+            found_overlapping_transposon = True
+        if len(chromosome_matched_transposons[
+                   (chromosome_matched_transposons["startIndex"] < start) &
+                   (chromosome_matched_transposons["endIndex"] > end)
+               ]) > 0:
+            found_overlapping_transposon = True
+
         results = results.append({"chineseSpringGeneID": gene["chineseSpringGeneID"],
                                   "overlap": found_overlapping_transposon}, ignore_index=True)
     return results
