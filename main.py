@@ -74,7 +74,7 @@ def get_te_gene_overlap(te_df, gene_df):
             found_overlapping_transposon = True
         elif len(chromosome_matched_transposons["endIndex"].between(start, end)) > 0:
             found_overlapping_transposon = True
-        if len(chromosome_matched_transposons[
+        elif len(chromosome_matched_transposons[
                    (chromosome_matched_transposons["startIndex"] < start) &
                    (chromosome_matched_transposons["endIndex"] > end)
                ]) > 0:
