@@ -91,7 +91,9 @@ def fetch_accessions_names():
     return get_regex_from_web_pages(TEs_directory, accession_name_and_version_regex)
 
 
-def download_tdqm(path, out):
+def download_tdqm(path, out, override_existing=False):
+    if not override_existing and os.path.exists(out):
+        return out
     # Streaming, so we can iterate over the response.
     response = requests.get(path, stream=True)
     total_size_in_bytes = int(response.headers.get('content-length', 0))
