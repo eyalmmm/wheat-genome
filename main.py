@@ -127,8 +127,7 @@ def download_gene(accession_name):
 
 accessions = fetch_accessions_names()
 all_accessions_results = pandas.DataFrame({"chineseSpringGeneID": [], "overlap": [], "accession": []})
-# TODO: Remove the shuffle below
-random.shuffle(accessions)
+
 for accession in accessions:
     results = get_te_gene_overlap(open_TE(download_TE(accession)), open_gene(download_gene(accession)))
     results["accession"] = accession
